@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# Build directory
+build/
+buildDebug/
+
+# Binary directory
+bin/
+
+# Local machine files
+.vscode/
