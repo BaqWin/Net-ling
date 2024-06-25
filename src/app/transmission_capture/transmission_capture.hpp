@@ -7,6 +7,8 @@
 #include <mutex>
 #include <condition_variable>
 
+class FileLogger;
+
 class TransmissionCapture{
         pcpp::PcapLiveDevice* dev;
         std::vector<pcpp::RawPacket*> buffer1{};
@@ -28,4 +30,7 @@ class TransmissionCapture{
         static void onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
         void startCapture(const std::string& deviceIp);
         bool isFinished() const;
+        std::mutex& getInactiveMutex();
+        std::condition_variable& getCV();
+        std::vector<pcpp::RawPacket*>* getInactiveBuffer();
 };
