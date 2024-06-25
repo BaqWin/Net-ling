@@ -4,6 +4,7 @@
 #include "pcapplusplus/PcapLiveDevice.h"
 #include <vector>
 #include <thread>
+#include <atomic>
 #include <mutex>
 #include <condition_variable>
 
@@ -18,7 +19,7 @@ class TransmissionCapture{
         std::mutex activeMtx;
         std::mutex inactiveMtx;
         std::condition_variable cv;
-        bool capturing;
+        std::atomic<bool> capturing;
 
         TransmissionCapture();
         void swapBuffers();
