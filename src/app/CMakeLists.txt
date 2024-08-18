@@ -3,7 +3,7 @@ add_executable(${PROJECT_NAME} main.cpp)
 include_directories(/usr/local/include)
 add_subdirectory(controller)
 add_subdirectory(transmission_capture)
-add_subdirectory(file_logger)
+#add_subdirectory(file_logger)
 
 execute_process(COMMAND brew --prefix pcapplusplus OUTPUT_VARIABLE PCAPPLUSPLUS_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -23,7 +23,7 @@ target_link_libraries(${PROJECT_NAME}
     ${SYSTEMCONFIGURATION_FRAMEWORK}
     controller-lib
     transmission-lib
-    logger-lib
+    #logger-lib
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra -pedantic)
