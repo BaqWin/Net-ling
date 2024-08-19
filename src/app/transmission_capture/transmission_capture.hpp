@@ -1,20 +1,22 @@
 #pragma once
 
-#include "pcapplusplus/PcapLiveDeviceList.h"
 #include "pcapplusplus/PcapLiveDevice.h"
-#include <vector>
-#include <thread>
-#include <mutex>
+#include "pcapplusplus/PcapLiveDeviceList.h"
+#include <condition_variable>
 #include <future>
-#include <iostream>
+#include <mutex>
+#include <thread>
+#include <vector>
 
-class TransmissionCapture{
-        std::vector<std::unique_ptr<pcpp::RawPacket>> buffer;
-        std::mutex bufferMutex;
+class TransmissionCapture
+{
+    std::vector<std::unique_ptr<pcpp::RawPacket>> buffer;
+    std::mutex bufferMutex;
+    std::condition_variable cv;
 
-        static void onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
+    static void onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
 
-    public:
-        TransmissionCapture() = default;
-        void startCapture(const std::string& nic);
+  public:
+    TransmissionCapture() = default;
+    void startCapture(const std::string& nic);
 };

@@ -1,38 +1,34 @@
 #include "file_logger.hpp"
 
-#include <iostream>
+FileLogger::FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec)
+    : buffer(std::move(vec)), pcapWriter(generateUniqueFileName()), thread(&FileLogger::logPackets, this)
+{
+}
 
-// FileLogger::FileLogger(TransmissionCapture& capture, const std::string& filePath)
-// : capture(capture), pcapWriter(filePath), stopLogging(false), thread(&FileLogger::logPackets, this){}
+FileLogger::~FileLogger()
+{
+    if (thread.joinable())
+    {
+        thread.join();
+    }
+    pcapWriter.close();
+}
 
-// FileLogger::~FileLogger() {
-//     if (thread.joinable()) {
-//         thread.join();
-//     }
-//     pcapWriter.close();
-// }
+void FileLogger::logPackets()
+{
+    pcapWriter.open();
+    for (const auto& packet : buffer)
+    {
+        pcapWriter.writePacket(*packet);
+    }
+    buffer.clear();
+}
 
-// void FileLogger::stop() {
-//     stopLogging = true;
-//     capture.getCV().notify_all();
-// }
+std::string FileLogger::generateUniqueFileName()
+{
+    std::time_t now = std::time(nullptr);
+    std::stringstream ss;
+    ss << "capture_" << std::put_time(std::localtime(&now), "%Y%m%d_%H%M%S") << ".pcap";
 
-// void FileLogger::logPackets() {
-//     while (true) {
-//         std::unique_lock<std::mutex> lock(capture.getInactiveMutex());
-//         capture.getCV().wait(lock, [this] { return !capture.getInactiveBuffer()->empty() || stopLogging; });
-
-//         if (stopLogging && capture.getInactiveBuffer()->empty()) {
-//             break;
-//         }
-
-//         auto buffer = capture.getInactiveBuffer();
-//         pcapWriter.open();
-//         for (const auto& packet : *buffer) {
-//             pcapWriter.writePacket(*packet);
-//             delete packet;
-//         }
-//         buffer->clear();
-//         pcapWriter.close();
-//     }
-// }
+    return ss.str();
+}

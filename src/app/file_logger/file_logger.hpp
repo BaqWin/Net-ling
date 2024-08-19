@@ -1,17 +1,22 @@
 #pragma once
 
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <thread>
+
 #include "pcapplusplus/PcapFileDevice.h"
-#include "transmission_capture.hpp"
 
-class FileLogger{
-    // TransmissionCapture& capture;
-    // pcpp::PcapFileWriterDevice pcapWriter;
-    // std::atomic<bool> stopLogging;
-    // std::thread thread;
+class FileLogger
+{
+    std::vector<std::unique_ptr<pcpp::RawPacket>> buffer;
+    pcpp::PcapFileWriterDevice pcapWriter;
+    std::thread thread;
 
-    // public:
-    //     FileLogger(TransmissionCapture& capture, const std::string& filePath);
-    //     ~FileLogger();
-    //     void logPackets();
-    //     void stop();
+    std::string generateUniqueFileName();
+
+  public:
+    FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec);
+    ~FileLogger();
+    void logPackets();
 };
