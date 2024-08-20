@@ -1,8 +1,5 @@
 #include "rule_type.hpp"
 
-#include <algorithm>
-#include <cctype>
-
 RuleType getRuleType(std::string& type){
     std::transform(type.begin(), type.end(), type.begin(), ::toupper);
 
