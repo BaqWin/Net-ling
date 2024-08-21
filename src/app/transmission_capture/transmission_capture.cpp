@@ -108,12 +108,15 @@ void TransmissionCapture::setNIC(const std::string& rule)
     }
 }
 
-void TransmissionCapture::setFileAmount(std::size_t amount){
+void TransmissionCapture::setFileAmount(std::size_t amount)
+{
     loopAmount_ = amount;
 }
-void TransmissionCapture::setFileAmount(std::string& rule){
+void TransmissionCapture::setFileAmount(std::string& rule)
+{
     std::transform(rule.begin(), rule.end(), rule.begin(), ::toupper);
-    if(rule == "INFINITE" || rule == "LOOP"){
+    if (rule == "INFINITE" || rule == "LOOP")
+    {
         infinite_ = true;
     }
 }

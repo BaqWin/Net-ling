@@ -2,13 +2,13 @@
 
 #include "pcapplusplus/PcapLiveDevice.h"
 #include "pcapplusplus/PcapLiveDeviceList.h"
+#include <algorithm>
 #include <condition_variable>
 #include <future>
 #include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
-#include <algorithm>
 
 class TransmissionCapture
 {

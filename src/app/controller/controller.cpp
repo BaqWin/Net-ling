@@ -61,7 +61,9 @@ void Controller::start()
         {
             FileLogger log(std::move(packetCollections.front()));
             packetCollections.erase(packetCollections.begin());
-        } else if(packetCollections.empty() && !capturing_){
+        }
+        else if (packetCollections.empty() && !capturing_)
+        {
             break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -79,6 +81,7 @@ Controller& Controller::getInstance()
     return instance;
 }
 
-void Controller::switchCapture(){
+void Controller::switchCapture()
+{
     capturing_ = false;
 }
