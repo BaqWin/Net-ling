@@ -38,14 +38,9 @@ void TransmissionCapture::startCapture()
 
     dev->startCapture(TransmissionCapture::onPacketArrival, this);
 
-    int end = 0;
-    while (true)
+    std::size_t end = 0;
+    while (end < loopAmount_ || infinite_)
     {
-        if (end == 10)
-        {
-            break;
-        }
-
         std::unique_lock<std::mutex> lock(bufferMutex);
         cv.wait(lock);
 
@@ -56,6 +51,7 @@ void TransmissionCapture::startCapture()
 
     dev->stopCapture();
     dev->close();
+    Controller::getInstance().switchCapture();
 }
 
 void TransmissionCapture::setBerkeleyRule(const std::string& rule)
@@ -109,5 +105,15 @@ void TransmissionCapture::setNIC(const std::string& rule)
     else
     {
         nic_ = rule;
+    }
+}
+
+void TransmissionCapture::setFileAmount(std::size_t amount){
+    loopAmount_ = amount;
+}
+void TransmissionCapture::setFileAmount(std::string& rule){
+    std::transform(rule.begin(), rule.end(), rule.begin(), ::toupper);
+    if(rule == "INFINITE" || rule == "LOOP"){
+        infinite_ = true;
     }
 }

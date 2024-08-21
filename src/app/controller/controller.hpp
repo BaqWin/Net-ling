@@ -15,6 +15,7 @@ class Controller
     Controller() = default;
     std::shared_ptr<TransmissionCapture> transmissionCapture_;
     std::vector<std::vector<std::unique_ptr<pcpp::RawPacket>>> packetCollections;
+    bool capturing_ = true;
 
     void applyRules();
     void start();
@@ -22,6 +23,7 @@ class Controller
   public:
     void init();
     void addToPacketCollections(std::vector<std::unique_ptr<pcpp::RawPacket>>&& newVector);
+    void switchCapture();
 
     static Controller& getInstance();
 

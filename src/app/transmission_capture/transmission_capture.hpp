@@ -8,6 +8,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <algorithm>
 
 class TransmissionCapture
 {
@@ -17,6 +18,8 @@ class TransmissionCapture
     std::string berkeleyRule_;
     std::size_t fileLength_ = 500;
     std::string nic_;
+    bool infinite_ = false;
+    std::size_t loopAmount_ = 1;
 
     static void onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
     std::string getActiveNIC();
@@ -27,4 +30,6 @@ class TransmissionCapture
     void setBerkeleyRule(const std::string& rule);
     void setFileLength(std::size_t rule);
     void setNIC(const std::string& rule);
+    void setFileAmount(std::size_t amount);
+    void setFileAmount(std::string& rule);
 };

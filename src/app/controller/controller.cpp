@@ -29,12 +29,20 @@ void Controller::applyRules()
                     {
                         transmissionCapture_->setNIC(arg);
                     }
+                    else if (e == RuleType::LOOP_RULE)
+                    {
+                        transmissionCapture_->setFileAmount(arg);
+                    }
                 }
                 else if constexpr (std::is_integral_v<T>)
                 {
                     if (e == RuleType::FILE_LENGTH)
                     {
                         transmissionCapture_->setFileLength(arg);
+                    }
+                    else if (e == RuleType::LOOP_RULE)
+                    {
+                        transmissionCapture_->setFileAmount(arg);
                     }
                 }
             },
@@ -47,20 +55,16 @@ void Controller::start()
     std::thread captureThread([this]() { transmissionCapture_->startCapture(); });
     captureThread.detach();
 
-    int end = 0;
     while (true)
     {
         if (!packetCollections.empty())
         {
             FileLogger log(std::move(packetCollections.front()));
             packetCollections.erase(packetCollections.begin());
-            end++;
-        }
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        if (end == 10)
-        {
+        } else if(packetCollections.empty() && !capturing_){
             break;
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
@@ -73,4 +77,8 @@ Controller& Controller::getInstance()
 {
     static Controller instance;
     return instance;
+}
+
+void Controller::switchCapture(){
+    capturing_ = false;
 }

@@ -9,6 +9,7 @@ enum class RuleType
     BERKELEY,
     FILE_LENGTH,
     NIC,
+    LOOP_RULE,
     UNKNOWN
 };
 
