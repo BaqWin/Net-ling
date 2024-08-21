@@ -11,7 +11,8 @@
 
 using Variant = std::variant<int, std::string>;
 
-class FilterFactory{
+class RuleFactory{
     public:
+        RuleFactory() = default;
         std::vector<std::pair<RuleType, Variant>> getRules(const std::string& filePath);
 };

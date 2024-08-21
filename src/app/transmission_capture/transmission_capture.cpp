@@ -9,7 +9,7 @@ void TransmissionCapture::onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiv
         std::lock_guard lock(captureInstance->bufferMutex);
         captureInstance->buffer.push_back(std::make_unique<pcpp::RawPacket>(*packet));
     } // lock_guard
-    if (captureInstance->buffer.size() >= 100)
+    if (captureInstance->buffer.size() >= captureInstance->fileLength_)
     {
         captureInstance->cv.notify_one();
     }
@@ -25,6 +25,10 @@ void TransmissionCapture::startCapture(const std::string& nic)
     if (!dev->open())
     {
         return;
+    }
+
+    if(!berkeleyRule_.empty()){
+        dev->setFilter(berkeleyRule_);
     }
 
     dev->startCapture(TransmissionCapture::onPacketArrival, this);
@@ -47,4 +51,12 @@ void TransmissionCapture::startCapture(const std::string& nic)
 
     dev->stopCapture();
     dev->close();
+}
+
+void TransmissionCapture::setBerkeleyRule(const std::string& rule){
+    berkeleyRule_ = rule;
+}
+
+void TransmissionCapture::setFileLength(std::size_t rule){
+    fileLength_ = rule;
 }

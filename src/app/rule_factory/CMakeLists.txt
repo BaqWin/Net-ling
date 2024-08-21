@@ -1,4 +1,4 @@
-add_library(rules-lib filter_factory.cpp)
+add_library(rules-lib rule_factory.cpp)
 
 target_compile_options(rules-lib PRIVATE -Werror -Wall -Wextra -pedantic)
 target_link_libraries(rules-lib PUBLIC type-lib)

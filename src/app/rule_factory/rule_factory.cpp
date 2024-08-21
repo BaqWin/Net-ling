@@ -1,6 +1,6 @@
-#include "filter_factory.hpp"
+#include "rule_factory.hpp"
 
-std::vector<std::pair<RuleType, Variant>> FilterFactory::getRules(const std::string& filePath){
+std::vector<std::pair<RuleType, Variant>> RuleFactory::getRules(const std::string& filePath){
     std::vector<std::pair<RuleType, Variant>> rules;
     std::ifstream file(filePath);
 
