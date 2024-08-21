@@ -1,9 +1,8 @@
 #include "transmission_capture.hpp"
 #include "controller.hpp"
 
-void TransmissionCapture::onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie)
+void TransmissionCapture::onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice*, void* cookie)
 {
-    (void)dev;
     TransmissionCapture* captureInstance = static_cast<TransmissionCapture*>(cookie);
     {
         std::lock_guard lock(captureInstance->bufferMutex);
@@ -15,9 +14,14 @@ void TransmissionCapture::onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiv
     }
 }
 
-void TransmissionCapture::startCapture(const std::string& nic)
+void TransmissionCapture::startCapture()
 {
-    pcpp::PcapLiveDevice* dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByIp(nic);
+    if (nic_.empty())
+    {
+        nic_ = getActiveNIC();
+    }
+
+    pcpp::PcapLiveDevice* dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByIp(nic_);
     if (dev == nullptr)
     {
         return;
@@ -27,7 +31,8 @@ void TransmissionCapture::startCapture(const std::string& nic)
         return;
     }
 
-    if(!berkeleyRule_.empty()){
+    if (!berkeleyRule_.empty())
+    {
         dev->setFilter(berkeleyRule_);
     }
 
@@ -53,10 +58,56 @@ void TransmissionCapture::startCapture(const std::string& nic)
     dev->close();
 }
 
-void TransmissionCapture::setBerkeleyRule(const std::string& rule){
+void TransmissionCapture::setBerkeleyRule(const std::string& rule)
+{
     berkeleyRule_ = rule;
 }
 
-void TransmissionCapture::setFileLength(std::size_t rule){
+void TransmissionCapture::setFileLength(std::size_t rule)
+{
     fileLength_ = rule;
+}
+
+std::string TransmissionCapture::getActiveNIC()
+{
+    pcpp::PcapLiveDeviceList& deviceList = pcpp::PcapLiveDeviceList::getInstance();
+    std::vector<pcpp::PcapLiveDevice*> devices = deviceList.getPcapLiveDevicesList();
+
+    std::string activeNIC = "127.0.0.1";
+    int highestPacketCount = -1;
+
+    for (pcpp::PcapLiveDevice* device : devices)
+    {
+        device->open();
+
+        int packetCount = 0;
+        device->startCapture(
+            [](pcpp::RawPacket*, pcpp::PcapLiveDevice*, void* cookie) {
+                int* packetCount = static_cast<int*>(cookie);
+                (*packetCount)++;
+            },
+            &packetCount);
+
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        device->stopCapture();
+        device->close();
+        if (packetCount > highestPacketCount)
+        {
+            highestPacketCount = packetCount;
+            activeNIC = device->getIPv4Address().toString();
+        }
+    }
+    return activeNIC;
+}
+
+void TransmissionCapture::setNIC(const std::string& rule)
+{
+    if (rule == "Auto")
+    {
+        nic_ = getActiveNIC();
+    }
+    else
+    {
+        nic_ = rule;
+    }
 }

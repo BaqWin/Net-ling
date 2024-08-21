@@ -1,38 +1,50 @@
 #include "controller.hpp"
 
-#include <iostream>
-
 void Controller::init()
 {
     transmissionCapture_ = std::make_shared<TransmissionCapture>();
     applyRules();
+    start();
 }
 
-void Controller::applyRules(){
+void Controller::applyRules()
+{
     RuleFactory factory;
     auto vec = factory.getRules("Test.txt");
-    for(auto& p : vec){
+    for (auto& p : vec)
+    {
         RuleType e = p.first;
         auto& v = p.second;
 
-        std::visit([this, e](auto&& arg) {
-            using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, std::string>) {
-                if (e == RuleType::BERKELEY) {
-                    transmissionCapture_->setBerkeleyRule(arg);
+        std::visit(
+            [this, e](auto&& arg) {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, std::string>)
+                {
+                    if (e == RuleType::BERKELEY)
+                    {
+                        transmissionCapture_->setBerkeleyRule(arg);
+                    }
+                    else if (e == RuleType::NIC)
+                    {
+                        transmissionCapture_->setNIC(arg);
+                    }
                 }
-            } else if constexpr (std::is_integral_v<T>) {
-                if (e == RuleType::FILE_LENGTH) {
-                    transmissionCapture_->setFileLength(arg);
+                else if constexpr (std::is_integral_v<T>)
+                {
+                    if (e == RuleType::FILE_LENGTH)
+                    {
+                        transmissionCapture_->setFileLength(arg);
+                    }
                 }
-            }
-        }, v);
+            },
+            v);
     }
 }
 
-void Controller::start(const std::string& nic)
+void Controller::start()
 {
-    std::thread captureThread([this, nic]() { transmissionCapture_->startCapture(nic); });
+    std::thread captureThread([this]() { transmissionCapture_->startCapture(); });
     captureThread.detach();
 
     int end = 0;

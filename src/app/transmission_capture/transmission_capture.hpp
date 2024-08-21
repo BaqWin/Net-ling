@@ -5,9 +5,9 @@
 #include <condition_variable>
 #include <future>
 #include <mutex>
+#include <string>
 #include <thread>
 #include <vector>
-#include <string>
 
 class TransmissionCapture
 {
@@ -16,12 +16,15 @@ class TransmissionCapture
     std::condition_variable cv;
     std::string berkeleyRule_;
     std::size_t fileLength_ = 500;
+    std::string nic_;
 
     static void onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
+    std::string getActiveNIC();
 
   public:
     TransmissionCapture() = default;
-    void startCapture(const std::string& nic);
+    void startCapture();
     void setBerkeleyRule(const std::string& rule);
     void setFileLength(std::size_t rule);
+    void setNIC(const std::string& rule);
 };

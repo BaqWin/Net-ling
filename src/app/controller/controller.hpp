@@ -1,14 +1,14 @@
 #pragma once
 
 #include "file_logger.hpp"
-#include "transmission_capture.hpp"
 #include "rule_factory.hpp"
 #include "rule_type.hpp"
+#include "transmission_capture.hpp"
 
+#include <functional>
+#include <map>
 #include <memory>
 #include <string>
-#include <map>
-#include <functional>
 
 class Controller
 {
@@ -17,11 +17,12 @@ class Controller
     std::vector<std::vector<std::unique_ptr<pcpp::RawPacket>>> packetCollections;
 
     void applyRules();
+    void start();
 
   public:
     void init();
-    void start(const std::string& nic);
     void addToPacketCollections(std::vector<std::unique_ptr<pcpp::RawPacket>>&& newVector);
+
     static Controller& getInstance();
 
     Controller(const Controller&) = delete;

@@ -4,9 +4,11 @@
 #include <cctype>
 #include <string>
 
-enum class RuleType{
+enum class RuleType
+{
     BERKELEY,
     FILE_LENGTH,
+    NIC,
     UNKNOWN
 };
 
