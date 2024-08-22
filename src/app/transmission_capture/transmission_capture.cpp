@@ -112,6 +112,7 @@ void TransmissionCapture::setFileAmount(std::size_t amount)
 {
     loopAmount_ = amount;
 }
+
 void TransmissionCapture::setFileAmount(std::string& rule)
 {
     std::transform(rule.begin(), rule.end(), rule.begin(), ::toupper);

@@ -10,7 +10,7 @@ void Controller::init()
 void Controller::applyRules()
 {
     RuleFactory factory;
-    auto vec = factory.getRules("Test.txt");
+    auto vec = factory.getRules("RuleList.txt");
     for (auto& p : vec)
     {
         RuleType e = p.first;
