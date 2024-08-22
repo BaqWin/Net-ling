@@ -1,5 +1,6 @@
 set(UT_SOURCES 
     unit_tests/controller/controller_tests.cpp
+    unit_tests/transmission_capture/transmission_capture_tests.cpp
 )
 
 include(GoogleTest)

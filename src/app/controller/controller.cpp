@@ -86,6 +86,7 @@ void Controller::switchCapture()
     capturing_ = false;
 }
 
-void Controller::setTransmissionCapture(const std::shared_ptr<TransmissionCapture>& newCapture){
+void Controller::setTransmissionCapture(const std::shared_ptr<TransmissionCapture>& newCapture)
+{
     transmissionCapture_ = newCapture;
 }

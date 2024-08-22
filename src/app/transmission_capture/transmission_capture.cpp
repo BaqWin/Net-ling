@@ -121,3 +121,28 @@ void TransmissionCapture::setFileAmount(std::string& rule)
         infinite_ = true;
     }
 }
+
+std::string TransmissionCapture::getBerkeleyRule() const
+{
+    return berkeleyRule_;
+}
+
+std::size_t TransmissionCapture::getFileLength() const
+{
+    return fileLength_;
+}
+
+std::string TransmissionCapture::getNIC() const
+{
+    return nic_;
+}
+
+bool TransmissionCapture::isInfinite() const
+{
+    return infinite_;
+}
+
+std::size_t TransmissionCapture::getLoopAmount() const
+{
+    return loopAmount_;
+}
