@@ -20,13 +20,12 @@ class Controller
     void applyRules();
     void start();
 
+    Controller(const Controller&) = delete;
+    Controller& operator=(const Controller&) = delete;
   public:
     void init();
     void addToPacketCollections(std::vector<std::unique_ptr<pcpp::RawPacket>>&& newVector);
     void switchCapture();
 
     static Controller& getInstance();
-
-    Controller(const Controller&) = delete;
-    Controller& operator=(const Controller&) = delete;
 };
