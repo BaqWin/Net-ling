@@ -59,7 +59,7 @@ void Controller::start()
     {
         if (!packetCollections.empty())
         {
-            FileLogger log(std::move(packetCollections.front()));
+            FileLogger log(std::move(packetCollections.front()), subDirectory_);
             packetCollections.erase(packetCollections.begin());
         }
         else if (packetCollections.empty() && !capturing_)
