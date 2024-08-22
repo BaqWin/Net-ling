@@ -1,0 +1,15 @@
+#pragma once
+
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+#include "transmission_capture.hpp"
+
+class MockTransmissionCapture : public TransmissionCapture {
+public:
+    MOCK_METHOD(void, startCapture, (), (override));
+    MOCK_METHOD(void, setBerkeleyRule, (const std::string&), (override));
+    MOCK_METHOD(void, setNIC, (const std::string&), (override));
+    MOCK_METHOD(void, setFileLength, (std::size_t), (override));
+    MOCK_METHOD(void, setFileAmount, (std::size_t), (override));
+};

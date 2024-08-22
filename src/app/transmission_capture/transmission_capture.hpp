@@ -26,10 +26,11 @@ class TransmissionCapture
 
   public:
     TransmissionCapture() = default;
-    void startCapture();
-    void setBerkeleyRule(const std::string& rule);
-    void setFileLength(std::size_t rule);
-    void setNIC(const std::string& rule);
-    void setFileAmount(std::size_t amount);
-    void setFileAmount(std::string& rule);
+    virtual void startCapture();
+    virtual void setBerkeleyRule(const std::string& rule);
+    virtual void setFileLength(std::size_t rule);
+    virtual void setNIC(const std::string& rule);
+    virtual void setFileAmount(std::size_t amount);
+    virtual void setFileAmount(std::string& rule);
+    virtual ~TransmissionCapture() = default;
 };

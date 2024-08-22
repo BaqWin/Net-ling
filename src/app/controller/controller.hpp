@@ -18,8 +18,6 @@ class Controller
     bool capturing_ = true;
     std::string subDirectory_ = "pcap_files/";
 
-    void applyRules();
-    void start();
     Controller(const Controller&) = delete;
     Controller& operator=(const Controller&) = delete;
 
@@ -27,6 +25,9 @@ class Controller
     void init();
     void addToPacketCollections(std::vector<std::unique_ptr<pcpp::RawPacket>>&& newVector);
     void switchCapture();
+    void setTransmissionCapture(const std::shared_ptr<TransmissionCapture>& transmissionCapture_);
+    void applyRules();
+    void start();
 
     static Controller& getInstance();
 };
