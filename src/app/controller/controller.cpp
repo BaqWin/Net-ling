@@ -95,3 +95,11 @@ void Controller::setOutputSubDirectory(const std::string& dir)
 {
     outputSubDirectory_ = dir;
 }
+
+void Controller::setRuleFilePath(const std::string& name){
+    ruleFile_ = name;
+}
+
+bool Controller::isCapturing() const {
+        return capturing_.load();
+}
