@@ -10,7 +10,7 @@ void Controller::init()
 void Controller::applyRules()
 {
     RuleFactory factory;
-    auto vec = factory.getRules("RuleList.txt");
+    auto vec = factory.getRules(ruleFile_);
     for (auto& p : vec)
     {
         RuleType e = p.first;
@@ -59,7 +59,7 @@ void Controller::start()
     {
         if (!packetCollections_.empty())
         {
-            FileLogger log(std::move(packetCollections_.front()), subDirectory_);
+            FileLogger log(std::move(packetCollections_.front()), outputSubDirectory_);
             packetCollections_.erase(packetCollections_.begin());
         }
         else if (packetCollections_.empty() && !capturing_)
@@ -91,7 +91,7 @@ void Controller::setTransmissionCapture(const std::shared_ptr<TransmissionCaptur
     transmissionCapture_ = newCapture;
 }
 
-void Controller::setSubDirectory(const std::string& dir)
+void Controller::setOutputSubDirectory(const std::string& dir)
 {
-    subDirectory_ = dir;
+    outputSubDirectory_ = dir;
 }

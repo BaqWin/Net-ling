@@ -16,7 +16,8 @@ class Controller
     std::shared_ptr<TransmissionCapture> transmissionCapture_;
     std::vector<std::vector<std::unique_ptr<pcpp::RawPacket>>> packetCollections_;
     bool capturing_ = true;
-    std::string subDirectory_ = "pcap_files/";
+    std::string outputSubDirectory_ = "pcap_files/";
+    std::string ruleFile_ = "RuleList.txt";
 
     Controller(const Controller&) = delete;
     Controller& operator=(const Controller&) = delete;
@@ -28,7 +29,8 @@ class Controller
     void setTransmissionCapture(const std::shared_ptr<TransmissionCapture>& transmissionCapture_);
     void applyRules();
     void start();
-    void setSubDirectory(const std::string& dir);
+    void setOutputSubDirectory(const std::string& dir);
+    void setRuleFilePath(const std::string& name);
 
     static Controller& getInstance();
 };

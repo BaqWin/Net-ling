@@ -17,7 +17,7 @@ class ControllerTest : public ::testing::Test
     {
         controller_ = &Controller::getInstance();
         mockCapture_ = std::make_shared<MockTransmissionCapture>();
-        controller_->setSubDirectory(newDir_);
+        controller_->setOutputSubDirectory(newDir_);
 
         controller_->setTransmissionCapture(mockCapture_);
     }
