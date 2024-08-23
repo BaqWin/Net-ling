@@ -31,9 +31,7 @@ class FileLoggerTest : public ::testing::Test
             ts.tv_sec = 1616161616;
             std::vector<uint8_t> data(64, 0x01);
 
-            auto packet = std::make_unique<pcpp::RawPacket>(data.data(), data.size(), ts, false);
-
-            packets.push_back(std::move(packet));
+            packets.push_back(std::make_unique<pcpp::RawPacket>(data.data(), data.size(), ts, false));
         }
         return packets;
     }

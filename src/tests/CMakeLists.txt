@@ -2,10 +2,12 @@ set(UT_SOURCES
     unit_tests/controller/controller_tests.cpp
     unit_tests/transmission_capture/transmission_capture_tests.cpp
     unit_tests/file_logger/file_logger_tests.cpp
+    unit_tests/rule_factory/rule_factory_tests.cpp
 )
 
 include(GoogleTest)
 
+add_subdirectory(test_utils)
 add_subdirectory(test_mocks)
 
 add_executable(${PROJECT_NAME}-tests ${UT_SOURCES})
@@ -28,6 +30,8 @@ target_link_libraries(${PROJECT_NAME}-tests PRIVATE
                                             controller-lib
                                             transmission-lib
                                             logger-lib
+                                            rules-lib
+                                            test_utils-lib
 )
 
 set(CTEST_BINARY_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
