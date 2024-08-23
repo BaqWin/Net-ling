@@ -6,41 +6,41 @@ namespace
 TEST_F(TransmissionCaptureTest, SetBerkeleyRuleTest)
 {
     std::string rule = "tcp port 80";
-    capture->setBerkeleyRule(rule);
+    capture_->setBerkeleyRule(rule);
 
-    EXPECT_EQ(capture->getBerkeleyRule(), rule);
+    EXPECT_EQ(capture_->getBerkeleyRule(), rule);
 }
 
 TEST_F(TransmissionCaptureTest, SetFileLengthTest)
 {
     std::size_t fileLength = 100;
-    capture->setFileLength(fileLength);
+    capture_->setFileLength(fileLength);
 
-    EXPECT_EQ(capture->getFileLength(), fileLength);
+    EXPECT_EQ(capture_->getFileLength(), fileLength);
 }
 
 TEST_F(TransmissionCaptureTest, SetNICTest)
 {
     std::string nic = "192.168.1.1";
-    capture->setNIC(nic);
+    capture_->setNIC(nic);
 
-    EXPECT_EQ(capture->getNIC(), nic);
+    EXPECT_EQ(capture_->getNIC(), nic);
 }
 
 TEST_F(TransmissionCaptureTest, SetFileAmountIntegerTest)
 {
     std::size_t amount = 5;
-    capture->setFileAmount(amount);
+    capture_->setFileAmount(amount);
 
-    EXPECT_EQ(capture->getLoopAmount(), amount);
+    EXPECT_EQ(capture_->getLoopAmount(), amount);
 }
 
 TEST_F(TransmissionCaptureTest, SetFileAmountStringTest)
 {
     std::string rule = "infinite";
-    capture->setFileAmount(rule);
+    capture_->setFileAmount(rule);
 
-    EXPECT_TRUE(capture->isInfinite());
+    EXPECT_TRUE(capture_->isInfinite());
 }
 
 } // namespace

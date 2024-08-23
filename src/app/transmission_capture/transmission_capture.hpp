@@ -12,9 +12,9 @@
 
 class TransmissionCapture
 {
-    std::vector<std::unique_ptr<pcpp::RawPacket>> buffer;
-    std::mutex bufferMutex;
-    std::condition_variable cv;
+    std::vector<std::unique_ptr<pcpp::RawPacket>> buffer_;
+    std::mutex bufferMutex_;
+    std::condition_variable cv_;
     std::string berkeleyRule_;
     std::size_t fileLength_ = 500;
     std::string nic_;

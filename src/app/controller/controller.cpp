@@ -57,12 +57,12 @@ void Controller::start()
 
     while (true)
     {
-        if (!packetCollections.empty())
+        if (!packetCollections_.empty())
         {
-            FileLogger log(std::move(packetCollections.front()), subDirectory_);
-            packetCollections.erase(packetCollections.begin());
+            FileLogger log(std::move(packetCollections_.front()), subDirectory_);
+            packetCollections_.erase(packetCollections_.begin());
         }
-        else if (packetCollections.empty() && !capturing_)
+        else if (packetCollections_.empty() && !capturing_)
         {
             break;
         }
@@ -72,7 +72,7 @@ void Controller::start()
 
 void Controller::addToPacketCollections(std::vector<std::unique_ptr<pcpp::RawPacket>>&& newVector)
 {
-    packetCollections.push_back(std::move(newVector));
+    packetCollections_.push_back(std::move(newVector));
 }
 
 Controller& Controller::getInstance()

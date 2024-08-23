@@ -14,7 +14,7 @@ class Controller
 {
     Controller() = default;
     std::shared_ptr<TransmissionCapture> transmissionCapture_;
-    std::vector<std::vector<std::unique_ptr<pcpp::RawPacket>>> packetCollections;
+    std::vector<std::vector<std::unique_ptr<pcpp::RawPacket>>> packetCollections_;
     bool capturing_ = true;
     std::string subDirectory_ = "pcap_files/";
 

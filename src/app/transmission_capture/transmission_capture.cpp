@@ -5,12 +5,12 @@ void TransmissionCapture::onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiv
 {
     TransmissionCapture* captureInstance = static_cast<TransmissionCapture*>(cookie);
     {
-        std::lock_guard lock(captureInstance->bufferMutex);
-        captureInstance->buffer.push_back(std::make_unique<pcpp::RawPacket>(*packet));
+        std::lock_guard lock(captureInstance->bufferMutex_);
+        captureInstance->buffer_.push_back(std::make_unique<pcpp::RawPacket>(*packet));
     } // lock_guard
-    if (captureInstance->buffer.size() >= captureInstance->fileLength_)
+    if (captureInstance->buffer_.size() >= captureInstance->fileLength_)
     {
-        captureInstance->cv.notify_one();
+        captureInstance->cv_.notify_one();
     }
 }
 
@@ -41,11 +41,11 @@ void TransmissionCapture::startCapture()
     std::size_t end = 0;
     while (end < loopAmount_ || infinite_)
     {
-        std::unique_lock<std::mutex> lock(bufferMutex);
-        cv.wait(lock);
+        std::unique_lock<std::mutex> lock(bufferMutex_);
+        cv_.wait(lock);
 
-        Controller::getInstance().addToPacketCollections(std::move(buffer));
-        buffer.clear();
+        Controller::getInstance().addToPacketCollections(std::move(buffer_));
+        buffer_.clear();
         end++;
     }
 

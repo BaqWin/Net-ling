@@ -4,10 +4,10 @@
 class TransmissionCaptureTest : public ::testing::Test
 {
   protected:
-    std::unique_ptr<TransmissionCapture> capture;
+    std::unique_ptr<TransmissionCapture> capture_;
 
     void SetUp() override
     {
-        capture = std::make_unique<TransmissionCapture>();
+        capture_ = std::make_unique<TransmissionCapture>();
     }
 };

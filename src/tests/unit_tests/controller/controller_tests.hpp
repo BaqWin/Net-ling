@@ -8,18 +8,18 @@
 class ControllerTest : public ::testing::Test
 {
   protected:
-    Controller* controller;
-    std::shared_ptr<MockTransmissionCapture> mockCapture;
-    std::string filePath = "RuleList.txt";
+    Controller* controller_;
+    std::shared_ptr<MockTransmissionCapture> mockCapture_;
+    std::string filePath_ = "RuleList.txt";
     std::string newDir_ = "test_logs/";
 
     void SetUp() override
     {
-        controller = &Controller::getInstance();
-        mockCapture = std::make_shared<MockTransmissionCapture>();
-        controller->setSubDirectory(newDir_);
+        controller_ = &Controller::getInstance();
+        mockCapture_ = std::make_shared<MockTransmissionCapture>();
+        controller_->setSubDirectory(newDir_);
 
-        controller->setTransmissionCapture(mockCapture);
+        controller_->setTransmissionCapture(mockCapture_);
     }
 
     void TearDown() override
@@ -28,7 +28,7 @@ class ControllerTest : public ::testing::Test
 
     void modifyFileLengthInRuleList(const std::regex& toFind, const std::string& replacement)
     {
-        std::ifstream inFile(filePath);
+        std::ifstream inFile(filePath_);
 
         std::stringstream buffer;
         buffer << inFile.rdbuf();
@@ -38,7 +38,7 @@ class ControllerTest : public ::testing::Test
 
         fileContent = std::regex_replace(fileContent, toFind, replacement);
 
-        std::ofstream outFile(filePath);
+        std::ofstream outFile(filePath_);
         outFile << fileContent;
         outFile.close();
     }
