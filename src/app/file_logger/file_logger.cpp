@@ -1,16 +1,16 @@
 #include "file_logger.hpp"
 
 FileLogger::FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec, const std::string& path)
-    : buffer(std::move(vec))
+    : buffer_(std::move(vec))
 {
-    thread = std::thread(&FileLogger::logPackets, this, path);
+    thread_ = std::thread(&FileLogger::logPackets, this, path);
 }
 
 FileLogger::~FileLogger()
 {
-    if (thread.joinable())
+    if (thread_.joinable())
     {
-        thread.join();
+        thread_.join();
     }
 }
 
@@ -22,10 +22,11 @@ void FileLogger::logPackets(const std::string& path)
     }
     pcpp::PcapFileWriterDevice pcapWriter(path + generateUniqueFileName());
     pcapWriter.open();
-    for (const auto& packet : buffer)
+    for (const auto& packet : buffer_)
     {
         pcapWriter.writePacket(*packet);
     }
+    pcapWriter.close();
 }
 
 std::string FileLogger::generateUniqueFileName()
@@ -38,4 +39,9 @@ std::string FileLogger::generateUniqueFileName()
     ss << "capture_" << std::put_time(std::localtime(&now), "%Y%m%d_%H%M%S") << "_" << dist(gen) << ".pcap";
 
     return ss.str();
+}
+
+std::thread& FileLogger::getThread()
+{
+    return thread_;
 }

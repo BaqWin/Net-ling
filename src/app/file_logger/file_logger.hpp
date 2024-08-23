@@ -11,13 +11,14 @@
 
 class FileLogger
 {
-    std::vector<std::unique_ptr<pcpp::RawPacket>> buffer;
-    std::thread thread;
+    std::vector<std::unique_ptr<pcpp::RawPacket>> buffer_;
+    std::thread thread_;
 
-    std::string generateUniqueFileName();
     void logPackets(const std::string& path);
 
   public:
     FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec, const std::string& path);
+    std::thread& getThread();
+    std::string generateUniqueFileName();
     ~FileLogger();
 };
