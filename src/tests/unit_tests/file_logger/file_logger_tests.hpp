@@ -2,6 +2,7 @@
 
 #include "file_logger.hpp"
 #include "gtest/gtest.h"
+#include "pcapplusplus/PcapFileDevice.h"
 
 class FileLoggerTest : public ::testing::Test
 {

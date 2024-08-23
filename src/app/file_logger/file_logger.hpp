@@ -19,6 +19,6 @@ class FileLogger
   public:
     FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec, const std::string& path);
     std::thread& getThread();
-    std::string generateUniqueFileName();
+    std::string generateUniqueFileName(pcpp::LinkLayerType linkLayerType);
     ~FileLogger();
 };
