@@ -90,3 +90,8 @@ void Controller::setTransmissionCapture(const std::shared_ptr<TransmissionCaptur
 {
     transmissionCapture_ = newCapture;
 }
+
+void Controller::setSubDirectory(const std::string& dir)
+{
+    subDirectory_ = dir;
+}

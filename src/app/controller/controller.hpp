@@ -28,6 +28,7 @@ class Controller
     void setTransmissionCapture(const std::shared_ptr<TransmissionCapture>& transmissionCapture_);
     void applyRules();
     void start();
+    void setSubDirectory(const std::string& dir);
 
     static Controller& getInstance();
 };

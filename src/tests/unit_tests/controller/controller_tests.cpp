@@ -2,7 +2,7 @@
 
 namespace
 {
-TEST_F(ControllerTest, InitCreatesCaptureAndAppliesRules)
+TEST_F(ControllerTest, InitCreatesCaptureAndAppliesRulesTest)
 {
     EXPECT_CALL(*mockCapture, setBerkeleyRule(testing::_)).Times(testing::AtLeast(0));
     EXPECT_CALL(*mockCapture, setNIC(testing::_)).Times(testing::AtLeast(0));
@@ -12,7 +12,7 @@ TEST_F(ControllerTest, InitCreatesCaptureAndAppliesRules)
     controller->init();
 }
 
-TEST_F(ControllerTest, ApplyRulesAppliesCorrectRules)
+TEST_F(ControllerTest, ApplyRulesAppliesCorrectRulesTest)
 {
     modifyFileLengthInRuleList(std::regex(R"(BERKELEY:\S+)"), "BERKELEY:udp");
     modifyFileLengthInRuleList(std::regex(R"(FILE_LENGTH:\d+)"), "FILE_LENGTH:11");

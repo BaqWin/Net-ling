@@ -11,11 +11,13 @@ class ControllerTest : public ::testing::Test
     Controller* controller;
     std::shared_ptr<MockTransmissionCapture> mockCapture;
     std::string filePath = "RuleList.txt";
+    std::string newDir_ = "test_logs/";
 
     void SetUp() override
     {
         controller = &Controller::getInstance();
         mockCapture = std::make_shared<MockTransmissionCapture>();
+        controller->setSubDirectory(newDir_);
 
         controller->setTransmissionCapture(mockCapture);
     }
