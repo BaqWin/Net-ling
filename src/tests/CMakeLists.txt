@@ -26,12 +26,6 @@ target_compile_options(${PROJECT_NAME}-integration-tests PRIVATE -Werror -Wall -
 
 set(COMMON_LIBS
     GTest::gtest_main
-    ${PCAPPLUSPLUS_LIB}
-    ${PACKETPLUSPLUS_LIB}
-    ${COMMONPLUSPLUS_LIB}
-    ${LIBPCAP_LIB}
-    ${COREFOUNDATION_FRAMEWORK}
-    ${SYSTEMCONFIGURATION_FRAMEWORK}
     controller-lib
     test_utils-lib
 )
@@ -41,10 +35,15 @@ set(UNIT_TEST_LIBS
     logger-lib
     rules-lib
     transmission-lib
+    ${PCAPPLUSPLUS_LIB}
+    ${PACKETPLUSPLUS_LIB}
+    ${COMMONPLUSPLUS_LIB}
+    ${LIBPCAP_LIB}
 )
 
 target_link_libraries(${PROJECT_NAME}-unit-tests PRIVATE ${COMMON_LIBS} ${UNIT_TEST_LIBS})
-target_link_libraries(${PROJECT_NAME}-integration-tests PRIVATE ${COMMON_LIBS})
+
+target_link_libraries(${PROJECT_NAME}-integration-tests PRIVATE ${COMMON_LIBS} ${UNIT_TEST_LIBS})
 
 set(CTEST_BINARY_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 

@@ -10,8 +10,6 @@ find_library(PCAPPLUSPLUS_LIB NAMES Pcap++ PATHS /usr/local/lib NO_DEFAULT_PATH)
 find_library(PACKETPLUSPLUS_LIB NAMES Packet++ PATHS /usr/local/lib NO_DEFAULT_PATH)
 find_library(COMMONPLUSPLUS_LIB NAMES Common++ PATHS /usr/local/lib NO_DEFAULT_PATH)
 find_library(LIBPCAP_LIB NAMES pcap)
-find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
-find_library(SYSTEMCONFIGURATION_FRAMEWORK SystemConfiguration)
 
 find_package(GTest REQUIRED)
 
