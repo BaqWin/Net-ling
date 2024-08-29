@@ -16,7 +16,7 @@ class TransmissionCapture
     std::mutex bufferMutex_;
     std::condition_variable cv_;
     std::string berkeleyRule_;
-    std::size_t fileLength_ = 500;
+    std::size_t fileLength_ = 50;
     std::string nic_;
     bool infinite_ = false;
     std::size_t loopAmount_ = 1;
@@ -29,7 +29,7 @@ class TransmissionCapture
     virtual void startCapture();
     virtual void setBerkeleyRule(const std::string& rule);
     virtual void setFileLength(std::size_t rule);
-    virtual void setNIC(const std::string& rule);
+    virtual void setNIC(std::string& rule);
     virtual void setFileAmount(std::size_t amount);
     virtual void setFileAmount(std::string& rule);
     virtual ~TransmissionCapture() = default;

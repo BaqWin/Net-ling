@@ -1,7 +1,7 @@
 from scapy.all import get_if_list, IP, UDP, Raw, send
 import random
 
-interface = "lo0"
+interface = "lo"
 packets = []
 
 for _ in range(30):

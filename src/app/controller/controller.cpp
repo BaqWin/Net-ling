@@ -11,6 +11,12 @@ void Controller::applyRules()
 {
     RuleFactory factory;
     auto vec = factory.getRules(ruleFile_);
+
+    if (vec.empty())
+    {
+        vec.emplace_back(std::make_pair(RuleType::NIC, "Auto"));
+    }
+
     for (auto& p : vec)
     {
         RuleType e = p.first;

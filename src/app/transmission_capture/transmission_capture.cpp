@@ -74,9 +74,17 @@ std::string TransmissionCapture::getActiveNIC()
 
     for (pcpp::PcapLiveDevice* device : devices)
     {
-        device->open();
+        if (!device->open())
+        {
+            continue;
+        }
+        if (device->getIPv4Address().toString() == "0.0.0.0")
+        {
+            continue;
+        }
 
         int packetCount = 0;
+
         device->startCapture(
             [](pcpp::RawPacket*, pcpp::PcapLiveDevice*, void* cookie) {
                 int* packetCount = static_cast<int*>(cookie);
@@ -84,7 +92,7 @@ std::string TransmissionCapture::getActiveNIC()
             },
             &packetCount);
 
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::this_thread::sleep_for(std::chrono::seconds(2));
         device->stopCapture();
         device->close();
         if (packetCount > highestPacketCount)
@@ -96,9 +104,10 @@ std::string TransmissionCapture::getActiveNIC()
     return activeNIC;
 }
 
-void TransmissionCapture::setNIC(const std::string& rule)
+void TransmissionCapture::setNIC(std::string& rule)
 {
-    if (rule == "Auto")
+    std::transform(rule.begin(), rule.end(), rule.begin(), ::toupper);
+    if (rule == "AUTO")
     {
         nic_ = getActiveNIC();
     }
