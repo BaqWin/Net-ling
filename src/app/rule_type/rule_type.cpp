@@ -10,7 +10,7 @@ RuleType getRuleType(std::string& type)
         return RuleType::FILE_LENGTH;
     if (type == "NIC")
         return RuleType::NIC;
-    if (type == "LOOP_RULE")
-        return RuleType::LOOP_RULE;
+    if (type == "FILE_AMOUNT")
+        return RuleType::FILE_AMOUNT;
     return RuleType::UNKNOWN;
 }

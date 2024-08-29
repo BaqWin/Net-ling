@@ -29,7 +29,7 @@ void Controller::applyRules()
                     {
                         transmissionCapture_->setNIC(arg);
                     }
-                    else if (e == RuleType::LOOP_RULE)
+                    else if (e == RuleType::FILE_AMOUNT)
                     {
                         transmissionCapture_->setFileAmount(arg);
                     }
@@ -40,7 +40,7 @@ void Controller::applyRules()
                     {
                         transmissionCapture_->setFileLength(arg);
                     }
-                    else if (e == RuleType::LOOP_RULE)
+                    else if (e == RuleType::FILE_AMOUNT)
                     {
                         transmissionCapture_->setFileAmount(arg);
                     }
