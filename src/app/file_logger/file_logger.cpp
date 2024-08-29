@@ -3,27 +3,21 @@
 #include <iostream>
 
 FileLogger::FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec, const std::string& path)
-    : buffer_(std::move(vec))
+    : buffer_(std::move(vec)), path_(path)
 {
-    thread_ = std::thread(&FileLogger::logPackets, this, path);
-    thread_.detach();
 }
 
 FileLogger::~FileLogger()
 {
-    // if (thread_.joinable())
-    // {
-    //     thread_.join();
-    // }
 }
 
-void FileLogger::logPackets(const std::string& path)
+void FileLogger::logPackets()
 {
     std::unordered_map<pcpp::LinkLayerType, std::unique_ptr<pcpp::PcapFileWriterDevice>> writerMap;
 
-    if (!std::filesystem::exists(path))
+    if (!std::filesystem::exists(path_))
     {
-        std::filesystem::create_directories(path);
+        std::filesystem::create_directories(path_);
     }
 
     for (const auto& packet : buffer_)
@@ -32,7 +26,7 @@ void FileLogger::logPackets(const std::string& path)
 
         if (writerMap.find(linkLayerType) == writerMap.end())
         {
-            std::string fileName = path + generateUniqueFileName(linkLayerType);
+            std::string fileName = path_ + generateUniqueFileName(linkLayerType);
             writerMap.emplace(linkLayerType, std::make_unique<pcpp::PcapFileWriterDevice>(fileName, linkLayerType));
         }
 
@@ -51,15 +45,8 @@ std::string FileLogger::generateUniqueFileName(pcpp::LinkLayerType linkLayerType
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dist(1, 100);
-    std::time_t now = std::time(nullptr);
     std::stringstream ss;
-    ss << "capture_" << linkLayerType << "_" << std::put_time(std::localtime(&now), "%Y%m%d_%H%M%S") << "_" << dist(gen)
-       << ".pcap";
+    ss << "capture_" << linkLayerType << "_" << dist(gen) << "_" << dist(gen) << ".pcap";
 
     return ss.str();
-}
-
-std::thread& FileLogger::getThread()
-{
-    return thread_;
 }

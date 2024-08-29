@@ -1,56 +1,49 @@
 #include "transmission_capture.hpp"
 #include "controller.hpp"
 
-void TransmissionCapture::onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice*, void* cookie)
-{
+#include "transmission_capture.hpp"
+#include "controller.hpp"
+
+bool TransmissionCapture::onPacketArrivesBlockingMode(pcpp::RawPacket* packet, pcpp::PcapLiveDevice*, void* cookie) {
     TransmissionCapture* captureInstance = static_cast<TransmissionCapture*>(cookie);
-    {
-        std::lock_guard lock(captureInstance->bufferMutex_);
-        captureInstance->buffer_.push_back(std::make_unique<pcpp::RawPacket>(*packet));
-    } // lock_guard
-    if (captureInstance->buffer_.size() >= captureInstance->fileLength_)
-    {
-        captureInstance->cv_.notify_one();
+
+    std::lock_guard<std::mutex> lock(captureInstance->bufferMutex_);
+    captureInstance->buffer_.push_back(std::make_unique<pcpp::RawPacket>(*packet));
+
+    if (captureInstance->buffer_.size() >= captureInstance->fileLength_) {
+        return true;
+    } else {
+        return false;
     }
 }
 
-void TransmissionCapture::startCapture()
-{
-    if (nic_.empty())
-    {
-        nic_ = getActiveNIC();
-    }
+void TransmissionCapture::startCapture() {
 
-    pcpp::PcapLiveDevice* dev = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByIp(nic_);
-    if (dev == nullptr)
-    {
-        return;
-    }
-    if (!dev->open())
-    {
-        return;
-    }
+        if (nic_.empty()) {
+            nic_ = getActiveNIC();
+        }
 
-    if (!berkeleyRule_.empty())
-    {
-        dev->setFilter(berkeleyRule_);
-    }
+        pcapDevice_ = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByIp(nic_);
+        if (pcapDevice_ == nullptr || !pcapDevice_->open()) {
+            return;
+        }
 
-    dev->startCapture(TransmissionCapture::onPacketArrival, this);
+        if (!berkeleyRule_.empty()) {
+            pcapDevice_->setFilter(berkeleyRule_);
+        }
 
     std::size_t end = 0;
-    while (end < loopAmount_ || infinite_)
-    {
-        std::unique_lock<std::mutex> lock(bufferMutex_);
-        cv_.wait(lock);
-
-        Controller::getInstance().addToPacketCollections(std::move(buffer_));
-        buffer_.clear();
+    while (end < loopAmount_ || infinite_) {
+        pcapDevice_->startCaptureBlockingMode(onPacketArrivesBlockingMode, this, 10);
+        {
+            std::lock_guard<std::mutex> lock(bufferMutex_);
+            Controller::getInstance().addToPacketCollections(std::move(buffer_));
+            buffer_.clear();
+        }
+        pcapDevice_->stopCapture();
         end++;
     }
-
-    dev->stopCapture();
-    dev->close();
+    pcapDevice_->close();
     Controller::getInstance().switchCapture();
 }
 
@@ -72,6 +65,8 @@ std::string TransmissionCapture::getActiveNIC()
     std::string activeNIC = "127.0.0.1";
     int highestPacketCount = -1;
 
+    std::mutex packetCountMutex;
+
     for (pcpp::PcapLiveDevice* device : devices)
     {
         if (!device->open())
@@ -86,8 +81,9 @@ std::string TransmissionCapture::getActiveNIC()
         int packetCount = 0;
 
         device->startCapture(
-            [](pcpp::RawPacket*, pcpp::PcapLiveDevice*, void* cookie) {
+            [&packetCountMutex](pcpp::RawPacket*, pcpp::PcapLiveDevice*, void* cookie) {
                 int* packetCount = static_cast<int*>(cookie);
+                std::lock_guard<std::mutex> lock(packetCountMutex);
                 (*packetCount)++;
             },
             &packetCount);

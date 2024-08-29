@@ -12,11 +12,6 @@ void Controller::applyRules()
     RuleFactory factory;
     auto vec = factory.getRules(ruleFile_);
 
-    if (vec.empty())
-    {
-        vec.emplace_back(std::make_pair(RuleType::NIC, "Auto"));
-    }
-
     for (auto& p : vec)
     {
         RuleType e = p.first;
@@ -58,19 +53,22 @@ void Controller::applyRules()
 
 void Controller::start()
 {
-    std::vector<std::unique_ptr<FileLogger>> loggers;
-
     std::thread captureThread([this]() { transmissionCapture_->startCapture(); });
-    captureThread.detach();
+    std::vector<std::thread> loggerThreads;
 
     while (true)
     {
+        std::lock_guard lock(collectionMutex_);
         if (!packetCollections_.empty())
         {
-            auto logger = std::make_unique<FileLogger>(std::move(packetCollections_.front()), outputSubDirectory_);
+            auto packetCollection = std::move(packetCollections_.front());
             packetCollections_.erase(packetCollections_.begin());
 
-            loggers.push_back(std::move(logger));
+            loggerThreads.emplace_back([packetCollection = std::move(packetCollection), this]() mutable
+                {
+                    auto logger = std::make_unique<FileLogger>(std::move(packetCollection), outputSubDirectory_);
+                    logger->logPackets();
+                });
         }
         else if (packetCollections_.empty() && !capturing_)
         {
@@ -78,11 +76,19 @@ void Controller::start()
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    captureThread.join();
+    for (auto& thread : loggerThreads)
+    {
+        if (thread.joinable())
+        {
+            thread.join();
+        }
+    }
 }
 
 void Controller::addToPacketCollections(std::vector<std::unique_ptr<pcpp::RawPacket>>&& newVector)
 {
+    std::lock_guard<std::mutex> lock(collectionMutex_);
     packetCollections_.push_back(std::move(newVector));
 }
 
@@ -115,4 +121,8 @@ void Controller::setRuleFilePath(const std::string& name)
 bool Controller::isCapturing() const
 {
     return capturing_.load();
+}
+
+std::mutex& Controller::getPacketMutex() {
+        return collectionMutex_;
 }

@@ -9,17 +9,16 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
+#include <mutex>
 
 class FileLogger
 {
     std::vector<std::unique_ptr<pcpp::RawPacket>> buffer_;
-    std::thread thread_;
-
-    void logPackets(const std::string& path);
+    std::string path_;
 
   public:
     FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec, const std::string& path);
-    std::thread& getThread();
+    void logPackets();
     std::string generateUniqueFileName(pcpp::LinkLayerType linkLayerType);
     ~FileLogger();
 };

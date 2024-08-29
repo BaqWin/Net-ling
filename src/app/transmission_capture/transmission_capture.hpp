@@ -2,6 +2,7 @@
 
 #include "pcapplusplus/PcapLiveDevice.h"
 #include "pcapplusplus/PcapLiveDeviceList.h"
+#include <pcap/pcap.h>
 #include <algorithm>
 #include <condition_variable>
 #include <future>
@@ -15,13 +16,15 @@ class TransmissionCapture
     std::vector<std::unique_ptr<pcpp::RawPacket>> buffer_;
     std::mutex bufferMutex_;
     std::condition_variable cv_;
+    pcpp::PcapLiveDevice* pcapDevice_ = nullptr;
     std::string berkeleyRule_;
     std::size_t fileLength_ = 50;
     std::string nic_;
     bool infinite_ = false;
     std::size_t loopAmount_ = 1;
+    bool capturing_ = false;
 
-    static void onPacketArrival(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
+    static bool onPacketArrivesBlockingMode(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
     std::string getActiveNIC();
 
   public:

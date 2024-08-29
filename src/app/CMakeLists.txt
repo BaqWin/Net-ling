@@ -19,4 +19,4 @@ target_link_libraries(${PROJECT_NAME}
     ${LIBPCAP_LIB}
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -Wextra -pedantic)
+target_compile_options(${PROJECT_NAME} PRIVATE -g -Werror -Wall -Wextra -pedantic)

@@ -6,7 +6,7 @@ namespace
 TEST_F(IntegrationTestFixture, IntegrationSuccessTest)
 {
     setTestRuleFilePath(
-        createTempFile({"BERKELEY:udp", "FILE_LENGTH:5", "NIC:127.0.0.1", "LOOP_RULE:2"}, ruleFilePath_));
+        createTempFile({"BERKELEY:udp", "FILE_LENGTH:5", "NIC:127.0.0.1", "FILE_AMOUNT:4"}, ruleFilePath_));
     std::thread pythonThread([this]() {
         std::this_thread::sleep_for(std::chrono::seconds(timeout_duration_seconds));
         std::string command = "python3 " + scriptPath_;

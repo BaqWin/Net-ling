@@ -8,6 +8,7 @@ TEST_F(FileLoggerTest, PacketLogTest)
     auto packets = createTestPackets(5);
 
     FileLogger logger(std::move(packets), tempDir_);
+    logger.logPackets();
 
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 

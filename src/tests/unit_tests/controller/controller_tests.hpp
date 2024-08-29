@@ -16,7 +16,7 @@ class ControllerTest : public ::testing::Test
 
     void SetUp() override
     {
-        createTempFile({"BERKELEY:udp", "FILE_LENGTH:5", "NIC:Auto", "LOOP_RULE:2"}, filePath_);
+        createTempFile({"BERKELEY:udp", "FILE_LENGTH:5", "NIC:Auto", "FILE_AMOUNT:2"}, filePath_);
         controller_ = &Controller::getInstance();
         mockCapture_ = std::make_shared<MockTransmissionCapture>();
         controller_->setOutputSubDirectory(newDir_);
