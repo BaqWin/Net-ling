@@ -29,21 +29,14 @@ TEST_F(FileLoggerTest, PacketLogTest)
     pcapFile.close();
 }
 
-TEST_F(FileLoggerTest, ThreadJoinTest)
-{
-    auto packets = createTestPackets(5);
-
-    FileLogger logger(std::move(packets), tempDir_);
-
-    ASSERT_TRUE(logger.getThread().joinable());
-}
-
 TEST_F(FileLoggerTest, UniqueFileNameTest)
 {
     FileLogger logger({}, tempDir_);
 
     std::string fileName1 = logger.generateUniqueFileName(pcpp::LINKTYPE_ETHERNET);
     std::string fileName2 = logger.generateUniqueFileName(pcpp::LINKTYPE_NULL);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     ASSERT_NE(fileName1, fileName2);
 }

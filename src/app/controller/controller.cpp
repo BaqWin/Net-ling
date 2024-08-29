@@ -52,6 +52,8 @@ void Controller::applyRules()
 
 void Controller::start()
 {
+    std::vector<std::unique_ptr<FileLogger>> loggers;
+
     std::thread captureThread([this]() { transmissionCapture_->startCapture(); });
     captureThread.detach();
 
@@ -59,8 +61,10 @@ void Controller::start()
     {
         if (!packetCollections_.empty())
         {
-            FileLogger log(std::move(packetCollections_.front()), outputSubDirectory_);
+            auto logger = std::make_unique<FileLogger>(std::move(packetCollections_.front()), outputSubDirectory_);
             packetCollections_.erase(packetCollections_.begin());
+
+            loggers.push_back(std::move(logger));
         }
         else if (packetCollections_.empty() && !capturing_)
         {
@@ -68,6 +72,7 @@ void Controller::start()
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 }
 
 void Controller::addToPacketCollections(std::vector<std::unique_ptr<pcpp::RawPacket>>&& newVector)
@@ -96,10 +101,12 @@ void Controller::setOutputSubDirectory(const std::string& dir)
     outputSubDirectory_ = dir;
 }
 
-void Controller::setRuleFilePath(const std::string& name){
+void Controller::setRuleFilePath(const std::string& name)
+{
     ruleFile_ = name;
 }
 
-bool Controller::isCapturing() const {
-        return capturing_.load();
+bool Controller::isCapturing() const
+{
+    return capturing_.load();
 }

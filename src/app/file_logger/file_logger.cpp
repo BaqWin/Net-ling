@@ -6,14 +6,15 @@ FileLogger::FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec, cons
     : buffer_(std::move(vec))
 {
     thread_ = std::thread(&FileLogger::logPackets, this, path);
+    thread_.detach();
 }
 
 FileLogger::~FileLogger()
 {
-    if (thread_.joinable())
-    {
-        thread_.join();
-    }
+    // if (thread_.joinable())
+    // {
+    //     thread_.join();
+    // }
 }
 
 void FileLogger::logPackets(const std::string& path)
@@ -24,20 +25,20 @@ void FileLogger::logPackets(const std::string& path)
     {
         std::filesystem::create_directories(path);
     }
-    
-    for (const auto& packet : buffer_)
-{
-    pcpp::LinkLayerType linkLayerType = packet->getLinkLayerType();
 
-    if (writerMap.find(linkLayerType) == writerMap.end())
+    for (const auto& packet : buffer_)
     {
-        std::string fileName = path + generateUniqueFileName(linkLayerType);
-        writerMap.emplace(linkLayerType, std::make_unique<pcpp::PcapFileWriterDevice>(fileName, linkLayerType));
+        pcpp::LinkLayerType linkLayerType = packet->getLinkLayerType();
+
+        if (writerMap.find(linkLayerType) == writerMap.end())
+        {
+            std::string fileName = path + generateUniqueFileName(linkLayerType);
+            writerMap.emplace(linkLayerType, std::make_unique<pcpp::PcapFileWriterDevice>(fileName, linkLayerType));
+        }
+
+        writerMap[linkLayerType]->open();
+        writerMap[linkLayerType]->writePacket(*packet);
     }
-    
-    writerMap[linkLayerType]->open();
-    writerMap[linkLayerType]->writePacket(*packet);
-}
 
     for (auto& writer : writerMap)
     {
@@ -52,7 +53,8 @@ std::string FileLogger::generateUniqueFileName(pcpp::LinkLayerType linkLayerType
     std::uniform_int_distribution<> dist(1, 100);
     std::time_t now = std::time(nullptr);
     std::stringstream ss;
-    ss << "capture_" << linkLayerType << "_" << std::put_time(std::localtime(&now), "%Y%m%d_%H%M%S") << "_" << dist(gen) << ".pcap";
+    ss << "capture_" << linkLayerType << "_" << std::put_time(std::localtime(&now), "%Y%m%d_%H%M%S") << "_" << dist(gen)
+       << ".pcap";
 
     return ss.str();
 }
