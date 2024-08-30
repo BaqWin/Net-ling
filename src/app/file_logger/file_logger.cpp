@@ -1,7 +1,5 @@
 #include "file_logger.hpp"
 
-#include <iostream>
-
 FileLogger::FileLogger(std::vector<std::unique_ptr<pcpp::RawPacket>>&& vec, const std::string& path)
     : buffer_(std::move(vec)), path_(path)
 {
