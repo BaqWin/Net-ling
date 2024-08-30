@@ -165,3 +165,8 @@ void TransmissionCapture::setTimeoutAmount(std::size_t amount)
 {
     timeout_ = amount;
 }
+
+std::size_t TransmissionCapture::getTimeoutLength() const
+{
+    return timeout_;
+}

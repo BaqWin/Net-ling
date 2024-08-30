@@ -43,4 +43,12 @@ TEST_F(TransmissionCaptureTest, SetFileAmountStringTest)
     EXPECT_TRUE(capture_->isInfinite());
 }
 
+TEST_F(TransmissionCaptureTest, SetTimeoutIntegerTest)
+{
+    std::size_t amount = 20;
+    capture_->setTimeoutAmount(amount);
+
+    EXPECT_EQ(capture_->getTimeoutLength(), amount);
+}
+
 } // namespace

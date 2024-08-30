@@ -35,11 +35,12 @@ class TransmissionCapture
     virtual void setNIC(std::string& rule);
     virtual void setFileAmount(std::size_t amount);
     virtual void setFileAmount(std::string& rule);
+    void setTimeoutAmount(std::size_t amount);
     virtual ~TransmissionCapture() = default;
     std::string getBerkeleyRule() const;
     std::size_t getFileLength() const;
     std::string getNIC() const;
+    std::size_t getTimeoutLength() const;
     bool isInfinite() const;
     std::size_t getLoopAmount() const;
-    void setTimeoutAmount(std::size_t amount);
 };
