@@ -45,6 +45,10 @@ void Controller::applyRules()
                     {
                         transmissionCapture_->setFileAmount(arg);
                     }
+                    else if (e == RuleType::TIMEOUT)
+                    {
+                        transmissionCapture_->setTimeoutAmount(arg);
+                    }
                 }
             },
             v);
@@ -64,11 +68,10 @@ void Controller::start()
             auto packetCollection = std::move(packetCollections_.front());
             packetCollections_.erase(packetCollections_.begin());
 
-            loggerThreads.emplace_back([packetCollection = std::move(packetCollection), this]() mutable
-                {
-                    auto logger = std::make_unique<FileLogger>(std::move(packetCollection), outputSubDirectory_);
-                    logger->logPackets();
-                });
+            loggerThreads.emplace_back([packetCollection = std::move(packetCollection), this]() mutable {
+                auto logger = std::make_unique<FileLogger>(std::move(packetCollection), outputSubDirectory_);
+                logger->logPackets();
+            });
         }
         else if (packetCollections_.empty() && !capturing_)
         {
@@ -123,6 +126,7 @@ bool Controller::isCapturing() const
     return capturing_.load();
 }
 
-std::mutex& Controller::getPacketMutex() {
-        return collectionMutex_;
+std::mutex& Controller::getPacketMutex()
+{
+    return collectionMutex_;
 }

@@ -2,11 +2,11 @@
 
 #include "pcapplusplus/PcapLiveDevice.h"
 #include "pcapplusplus/PcapLiveDeviceList.h"
-#include <pcap/pcap.h>
 #include <algorithm>
 #include <condition_variable>
 #include <future>
 #include <mutex>
+#include <pcap/pcap.h>
 #include <string>
 #include <thread>
 #include <vector>
@@ -22,7 +22,7 @@ class TransmissionCapture
     std::string nic_;
     bool infinite_ = false;
     std::size_t loopAmount_ = 1;
-    bool capturing_ = false;
+    std::size_t timeout_ = 10;
 
     static bool onPacketArrivesBlockingMode(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
     std::string getActiveNIC();
@@ -41,4 +41,5 @@ class TransmissionCapture
     std::string getNIC() const;
     bool isInfinite() const;
     std::size_t getLoopAmount() const;
+    void setTimeoutAmount(std::size_t amount);
 };

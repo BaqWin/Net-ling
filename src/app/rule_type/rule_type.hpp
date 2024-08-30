@@ -10,6 +10,7 @@ enum class RuleType
     FILE_LENGTH,
     NIC,
     FILE_AMOUNT,
+    TIMEOUT,
     UNKNOWN
 };
 

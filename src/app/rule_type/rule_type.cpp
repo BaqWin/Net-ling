@@ -12,5 +12,7 @@ RuleType getRuleType(std::string& type)
         return RuleType::NIC;
     if (type == "FILE_AMOUNT")
         return RuleType::FILE_AMOUNT;
+    if (type == "TIMEOUT")
+        return RuleType::TIMEOUT;
     return RuleType::UNKNOWN;
 }

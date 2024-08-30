@@ -1,40 +1,49 @@
 #include "transmission_capture.hpp"
 #include "controller.hpp"
 
-#include "transmission_capture.hpp"
 #include "controller.hpp"
+#include "transmission_capture.hpp"
 
-bool TransmissionCapture::onPacketArrivesBlockingMode(pcpp::RawPacket* packet, pcpp::PcapLiveDevice*, void* cookie) {
+bool TransmissionCapture::onPacketArrivesBlockingMode(pcpp::RawPacket* packet, pcpp::PcapLiveDevice*, void* cookie)
+{
     TransmissionCapture* captureInstance = static_cast<TransmissionCapture*>(cookie);
 
     std::lock_guard<std::mutex> lock(captureInstance->bufferMutex_);
     captureInstance->buffer_.push_back(std::make_unique<pcpp::RawPacket>(*packet));
 
-    if (captureInstance->buffer_.size() >= captureInstance->fileLength_) {
+    if (captureInstance->buffer_.size() >= captureInstance->fileLength_)
+    {
         return true;
-    } else {
+    }
+    else
+    {
         return false;
     }
 }
 
-void TransmissionCapture::startCapture() {
+void TransmissionCapture::startCapture()
+{
 
-        if (nic_.empty()) {
-            nic_ = getActiveNIC();
-        }
+    if (nic_.empty())
+    {
+        nic_ = getActiveNIC();
+    }
 
-        pcapDevice_ = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByIp(nic_);
-        if (pcapDevice_ == nullptr || !pcapDevice_->open()) {
-            return;
-        }
+    pcapDevice_ = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByIp(nic_);
+    if (pcapDevice_ == nullptr || !pcapDevice_->open())
+    {
+        return;
+    }
 
-        if (!berkeleyRule_.empty()) {
-            pcapDevice_->setFilter(berkeleyRule_);
-        }
+    if (!berkeleyRule_.empty())
+    {
+        pcapDevice_->setFilter(berkeleyRule_);
+    }
 
     std::size_t end = 0;
-    while (end < loopAmount_ || infinite_) {
-        pcapDevice_->startCaptureBlockingMode(onPacketArrivesBlockingMode, this, 10);
+    while (end < loopAmount_ || infinite_)
+    {
+        pcapDevice_->startCaptureBlockingMode(onPacketArrivesBlockingMode, this, timeout_);
         {
             std::lock_guard<std::mutex> lock(bufferMutex_);
             Controller::getInstance().addToPacketCollections(std::move(buffer_));
@@ -150,4 +159,9 @@ bool TransmissionCapture::isInfinite() const
 std::size_t TransmissionCapture::getLoopAmount() const
 {
     return loopAmount_;
+}
+
+void TransmissionCapture::setTimeoutAmount(std::size_t amount)
+{
+    timeout_ = amount;
 }
