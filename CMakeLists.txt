@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.23)
 project(net-ling)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 execute_process(COMMAND brew --prefix pcapplusplus OUTPUT_VARIABLE PCAPPLUSPLUS_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
