@@ -3,7 +3,6 @@
 #include "pcapplusplus/PcapLiveDevice.h"
 #include "pcapplusplus/PcapLiveDeviceList.h"
 #include <algorithm>
-#include <condition_variable>
 #include <future>
 #include <mutex>
 #include <pcap/pcap.h>
@@ -15,7 +14,6 @@ class TransmissionCapture
 {
     std::vector<std::unique_ptr<pcpp::RawPacket>> buffer_;
     std::mutex bufferMutex_;
-    std::condition_variable cv_;
     pcpp::PcapLiveDevice* pcapDevice_ = nullptr;
     std::string berkeleyRule_;
     std::size_t fileLength_ = 50;
